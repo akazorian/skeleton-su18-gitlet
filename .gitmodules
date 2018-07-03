@@ -1,0 +1,3 @@
+[submodule "library-su18"]
+	path = library-su18
+	url = https://github.com/cs61bl/library-su18
