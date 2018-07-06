@@ -88,12 +88,11 @@ Your {} folder is not where we expected it. Please ensure that your directory
 structure matches the following:
 \\library-su18
 \\gitlet
-    \\gitlet
-        Main.java
-        ...
-    \\testing
-        runner.py
-        ..."""
+    Main.java
+    ...
+\\gitlet-testing
+    runner.py
+    ..."""
 
 GITLET_COMMAND = "java gitlet.Main"
 JAVAC_COMMAND = "javac -d ."
@@ -406,7 +405,7 @@ if __name__ == "__main__":
             elif opt == "--superverbose":
                 superverbose = True
         if lib_dir is None:
-            lib_dir = join(dirname(dirname(abspath(getcwd()))),
+            lib_dir = join(dirname(abspath(getcwd())),
                       "library-su18/javalib")
         else:
             lib_dir = join(abspath(getcwd()), abspath(lib_dir))
