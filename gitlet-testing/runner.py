@@ -140,8 +140,9 @@ def nextCommand(full_cmnd, timeout):
     return check_output(full_cmnd, shell=True, universal_newlines=True,
                            stdin=DEVNULL, stderr=STDOUT, timeout=timeout)
 def stepIntoCommand(full_cmnd):
-    return check_output(full_cmnd, shell=True, universal_newlines=True,
+    out = check_output(full_cmnd, shell=True, universal_newlines=True,
                            stdin=DEVNULL, stderr=STDOUT, timeout=None)
+    return out.split("\n", 1)[1]
 
 def createTempDir(base):
     for n in range(100):
@@ -187,6 +188,7 @@ def doExecute(cmnd, dir, timeout):
     try:
         chdir(dir)
         full_cmnd = "{} {} {}".format(JAVA_COMMAND, GITLET_COMMAND, cmnd)
+        
         if DEBUG:
             print(">>> gitlet {}".format(cmnd))
             next_cmd = input()
@@ -200,9 +202,11 @@ def doExecute(cmnd, dir, timeout):
                 full_cmnd = "{} {} {} {}".format(JAVA_COMMAND, JVM_COMMAND, GITLET_COMMAND, cmnd)
                 out = stepIntoCommand(full_cmnd)
         else:
-            out = stepIntoCommand(full_cmnd)
+            out = nextCommand(full_cmnd, timeout)
+
         if superverbose:
             print(out)
+
         return "OK", out
     except CalledProcessError as excp:
         return ("java gitlet.Main exited with code {}".format(excp.args[0]),
@@ -465,7 +469,7 @@ if __name__ == "__main__":
             environ['CLASSPATH'] = "{}:{}:{}".format(abspath(getcwd()), lib_glob, environ['CLASSPATH'])
         else:
             environ['CLASSPATH'] = "{}:{}".format(abspath(getcwd()), lib_glob)
-        JAVA_COMMAND_COMMAND = 'exec ' + JAVA_COMMAND
+        JAVA_COMMAND = 'exec ' + JAVA_COMMAND
         JAVAC_COMMAND = 'exec ' + JAVAC_COMMAND
 
     compile_target = join(gitlet_dir, "*.java")
